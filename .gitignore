@@ -29,6 +29,8 @@
 *.hex
 
 # Debug files
+*.iex
+*.TMP
 *.htm
 *.map
 *.sct
