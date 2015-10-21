@@ -29,4 +29,11 @@
 *.hex
 
 # Debug files
+*.htm
+*.map
+*.sct
+*.crf
 *.dSYM/
+
+#directory
+/Monotroch Configuration
