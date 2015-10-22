@@ -466,6 +466,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\mpu.c</FilePath>
             </File>
+            <File>
+              <FileName>up_computer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\up_computer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

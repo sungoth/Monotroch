@@ -37,8 +37,9 @@
 #include "cmsis_os.h"
 
 /* USER CODE BEGIN Includes */
-#include "mpu.h"
 #include <stdio.h>
+#include "mpu.h"
+#include "up_computer.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -112,7 +113,18 @@ void StartDefaultTask(void const * argument)
     for(;;)
     {
         if(mpu_read(&Data) == MPU_OK)
-            printf("Pitch:%f\tRoll:%f\tYaw:%f\n",Data.Pitch,Data.Roll,Data.Yaw);
+        {
+            //printf("Pitch:%f\tRoll:%f\tYaw:%f\n",Data.Pitch,Data.Roll,Data.Yaw);
+            report_to_pc(Data.accel[0],
+                         Data.accel[1],
+                         Data.accel[2],
+                         Data.gyro[0],
+                         Data.gyro[1],
+                         Data.gyro[2],
+                         (short)(Data.Roll*100),
+                         (short)(Data.Pitch*100),
+                         (short)(Data.Yaw*100));
+        }
         osDelay(10);
     }
     /* USER CODE END StartDefaultTask */
