@@ -36,7 +36,11 @@ typedef struct
 	 
 void mpu_start(void);
 int mpu_read(MPU_Data* data);
-	 
+
+void run_self_test(void);
+ unsigned short inv_orientation_matrix_to_scalar(
+    const signed char *mtx);
+ unsigned short inv_row_2_scale(const signed char *row);
 	 
 #ifdef __cplusplus
 }

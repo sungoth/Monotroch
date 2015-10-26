@@ -58,11 +58,6 @@ void get_ms(unsigned long *time);
 int i2cwrite(uint8_t addr, uint8_t reg, uint8_t len, uint8_t * data);
 int i2cread(uint8_t addr, uint8_t reg, uint8_t len, uint8_t *buf);
 
-void run_self_test(void);
- unsigned short inv_orientation_matrix_to_scalar(
-    const signed char *mtx);
- unsigned short inv_row_2_scale(const signed char *row);
-
 /* Set up APIs */
 int mpu_init(struct int_param_s *int_param);
 int mpu_init_slave(void);
