@@ -35,7 +35,7 @@ float Kp_Speed,Ki_Speed;		//速度控制PID参数
 int AngleBalanceCalc(float angle,float angle_veloctity)
 {
 	int result;
-	result = Kp_Angle*(DstAngle-ActualAngle) + Kd_Angle * angle_veloctity;
+	result = Kp_Angle*(DstAngle-angle) + Kd_Angle * angle_veloctity;
 	return result;
 }
 
@@ -60,4 +60,17 @@ int SpeedBalanceCalc(int wheel_speed)
 	
 	result = Kp_Speed * speed_filter + Ki_Speed * speed_integral;
 	return result;
+}
+
+/**
+****************************************************************************************
+* @brief  平衡控制总输出
+* @parameter 无
+* @description
+*  这个函数用来计算驱动步进电机最后需要的频率
+*****************************************************************************************
+*/
+int ControlOut()
+{
+	return AngleBalanceCalc(ActualAngle,AngularVelocity) + SpeedBalanceCalc(ActualSpeed);
 }

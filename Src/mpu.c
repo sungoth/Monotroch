@@ -42,40 +42,24 @@ void mpu_start()
     if(result == MPU_OK)
     {
         printf("mpu initialization complete......\n ");	 	  //mpu_set_sensor
-        if(mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL) == MPU_OK)
-            printf("mpu_set_sensor complete ......\n");
-        else
+        if(!mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL) == MPU_OK)
             printf("mpu_set_sensor come across error ......\n");
-        if(mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL) == MPU_OK)	   	  //mpu_configure_fifo
-            printf("mpu_configure_fifo complete ......\n");
-        else
+        if(!mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL) == MPU_OK)	   	  //mpu_configure_fifo
             printf("mpu_configure_fifo come across error ......\n");
-        if(mpu_set_sample_rate(DEFAULT_MPU_HZ) == MPU_OK)	   	  //mpu_set_sample_rate
-            printf("mpu_set_sample_rate complete ......\n");
-        else
+        if(!mpu_set_sample_rate(DEFAULT_MPU_HZ) == MPU_OK)	   	  //mpu_set_sample_rate
             printf("mpu_set_sample_rate error ......\n");
-        if(dmp_load_motion_driver_firmware() == MPU_OK)   	  //dmp_load_motion_driver_firmvare
-            printf("dmp_load_motion_driver_firmware complete ......\n");
-        else
+        if(!dmp_load_motion_driver_firmware() == MPU_OK)   	  //dmp_load_motion_driver_firmvare
             printf("dmp_load_motion_driver_firmware come across error ......\n");
-        if(dmp_set_orientation(inv_orientation_matrix_to_scalar(gyro_orientation)) == MPU_OK) 	  //dmp_set_orientation
-            printf("dmp_set_orientation complete ......\n");
-        else
+        if(!dmp_set_orientation(inv_orientation_matrix_to_scalar(gyro_orientation)) == MPU_OK) 	  //dmp_set_orientation
             printf("dmp_set_orientation come across error ......\n");
-        if(dmp_enable_feature(DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_TAP |
+        if(!dmp_enable_feature(DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_TAP |
                               DMP_FEATURE_ANDROID_ORIENT | DMP_FEATURE_SEND_RAW_ACCEL | DMP_FEATURE_SEND_CAL_GYRO |
                               DMP_FEATURE_GYRO_CAL) == MPU_OK)		   	  //dmp_enable_feature
-            printf("dmp_enable_feature complete ......\n");
-        else
             printf("dmp_enable_feature come across error ......\n");
-        if(dmp_set_fifo_rate(DEFAULT_MPU_HZ) == MPU_OK)   	  //dmp_set_fifo_rate
-            printf("dmp_set_fifo_rate complete ......\n");
-        else
+        if(!dmp_set_fifo_rate(50) == MPU_OK)   	  //dmp_set_fifo_rate
             printf("dmp_set_fifo_rate come across error ......\n");
         run_self_test();
-        if(mpu_set_dmp_state(1) == MPU_OK)
-            printf("mpu_set_dmp_state complete ......\n");
-        else
+        if(!mpu_set_dmp_state(1) == MPU_OK)
             printf("mpu_set_dmp_state come across error ......\n");
     }
 }

@@ -125,7 +125,7 @@ void StartDefaultTask(void const * argument)
                          (short)(Data.Pitch*100),
                          (short)(Data.Yaw*100));
         }
-        osDelay(10);
+        osDelay(5);
     }
     /* USER CODE END StartDefaultTask */
 }
