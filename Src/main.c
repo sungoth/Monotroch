@@ -37,6 +37,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "control.h"
 
 /* USER CODE BEGIN Includes */
 #include "mpu.h"
@@ -86,10 +87,12 @@ int main(void)
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
     MX_I2C1_Init();
+	MX_TIM5_Init();
     MX_TIM7_Init();
     MX_USART6_UART_Init();
 
     /* USER CODE BEGIN 2 */
+	InitA3967();
     mpu_start();
     /* USER CODE END 2 */
 

@@ -13,8 +13,8 @@
  */
  
 
-#ifndef __mpu_H
-#define __mpu_H
+#ifndef __MPU_H
+#define __MPU_H
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -38,12 +38,11 @@ void mpu_start(void);
 int mpu_read(MPU_Data* data);
 
 void run_self_test(void);
- unsigned short inv_orientation_matrix_to_scalar(
-    const signed char *mtx);
- unsigned short inv_row_2_scale(const signed char *row);
+unsigned short inv_orientation_matrix_to_scalar(const signed char *mtx);
+unsigned short inv_row_2_scale(const signed char *row);
 	 
 #ifdef __cplusplus
 }
 #endif
-#endif /*__ mpu_H */
+#endif /*__ MPU_H */
 

@@ -38,8 +38,12 @@
 
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include "mpu.h"
 #include "up_computer.h"
+#include "gpio.h"
+#include "tim.h"
+#include "control.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -48,7 +52,8 @@ osThreadId myTask02Handle;
 osThreadId myTask03Handle;
 
 /* USER CODE BEGIN Variables */
-MPU_Data Data;
+MPU_Data MpuData;
+int os_delay = 100;
 /* USER CODE END Variables */
 
 /* Function prototypes -------------------------------------------------------*/
@@ -112,18 +117,18 @@ void StartDefaultTask(void const * argument)
     /* Infinite loop */
     for(;;)
     {
-        if(mpu_read(&Data) == MPU_OK)
+        if(mpu_read(&MpuData) == MPU_OK)
         {
             //printf("Pitch:%f\tRoll:%f\tYaw:%f\n",Data.Pitch,Data.Roll,Data.Yaw);
-            report_to_pc(Data.accel[0],
-                         Data.accel[1],
-                         Data.accel[2],
-                         Data.gyro[0],
-                         Data.gyro[1],
-                         Data.gyro[2],
-                         (short)(Data.Roll*100),
-                         (short)(Data.Pitch*100),
-                         (short)(Data.Yaw*100));
+            report_to_pc(MpuData.accel[0],
+                         MpuData.accel[1],
+                         MpuData.accel[2],
+                         MpuData.gyro[0],
+                         MpuData.gyro[1],
+                         MpuData.gyro[2],
+                         (short)(MpuData.Roll*100),
+                         (short)(MpuData.Pitch*100),
+                         (short)(MpuData.Yaw*100));
         }
         osDelay(5);
     }
@@ -134,10 +139,32 @@ void StartDefaultTask(void const * argument)
 void StartTask02(void const * argument)
 {
     /* USER CODE BEGIN StartTask02 */
+	InitControlParam();
     /* Infinite loop */
     for(;;)
     {
-        osDelay(1);
+		int frequency = AngleBalanceCalc(MpuData.Pitch-3,MpuData.gyro[2]/16.384);
+		//方向处理
+		if(frequency < 0)
+			LEFT;
+		else
+			RIGHT;
+		
+		if(frequency <-2 || frequency > 2)
+		{
+			//驱动脉冲
+			HAL_GPIO_WritePin(GPIOA,STEP,GPIO_PIN_SET);
+			delay_us(1);
+			HAL_GPIO_WritePin(GPIOA,STEP,GPIO_PIN_RESET);
+		}
+		
+		//限幅处理
+		int _delay = abs(frequency);
+		if(_delay > 70)
+			_delay = 70;
+			
+		delay_us(os_delay-_delay);
+        //osDelay(100);
     }
     /* USER CODE END StartTask02 */
 }
