@@ -21,8 +21,10 @@
 float DstAngle,DstSpeed;		//设定角度、设定速度
 float ActualAngle,ActualSpeed;	//实际测量角度、实际测量速度
 float AngularVelocity;			//角速度
-float Kp_Angle,Kd_Angle;		//角度控制PID参数
+float Kp_Angle,Ki_Angle,Kd_Angle;		//角度控制PID参数
+float Kp_Gyro,Ki_Gyro,Kd_Gyro;	//角速度控制PID参数
 float Kp_Speed,Ki_Speed;		//速度控制PID参数
+float wp;
 
 /**
 ****************************************************************************************
@@ -33,9 +35,11 @@ float Kp_Speed,Ki_Speed;		//速度控制PID参数
 *  这个函数用来初始化A3976驱动芯片，设置为1/8步
 *****************************************************************************************
 */
-void InitA3967(void)
+void InitControlChip(void)
 {
+	#ifdef A3976
 	STEP_8();
+	#endif
 }
 
 /**
@@ -50,13 +54,19 @@ void InitA3967(void)
 void InitControlParam(void)
 {
 	//初始化PID控制参数
-	Kp_Angle = 20;
+	Kp_Angle = 600;
+	Ki_Angle = 0;
 	Kd_Angle = 0;
+	//内环PID
+	Kp_Gyro = 60;
+	Ki_Gyro = 15;
+	Kd_Gyro = 0;
 	Kp_Speed = 0;
 	Ki_Speed = 0;
 	//初始化目标参数
-	DstAngle = 0;
+	DstAngle = -2;
 	DstSpeed = 0;
+	wp = 1;
 }
 
 /**
@@ -71,10 +81,44 @@ void InitControlParam(void)
 */
 int AngleBalanceCalc(float angle,float angle_veloctity)
 {
-	int result;
-	result = Kp_Angle*(DstAngle-angle) + Kd_Angle * angle_veloctity;
-	return result;
+	float result;
+	float errAngle = angle - DstAngle;
+	result = Kp_Angle*tan(wp*errAngle)*errAngle + Kd_Angle * angle_veloctity;
+	return result;                 
 }
+
+float i_Angle;
+float old_Angle;
+int i_Gyro;
+int old_Gyro;
+/**
+****************************************************************************************
+* @brief  串级PID平衡算法
+* @parameter
+* 	angle:实际测量的角度
+*	gyro：角速度
+* @description
+*  这个函数用来计算驱动步进电机平衡控制
+*****************************************************************************************
+*/
+int FreqOut(float angle,int gyro)
+{
+	//角度外环
+	float AngleOut;
+	float errAngle = DstAngle - angle;
+	i_Angle += errAngle;
+	float d_Angle = angle - old_Angle;
+	AngleOut = Kp_Angle * errAngle + Ki_Angle * i_Angle + Kd_Angle * d_Angle;
+	old_Angle = angle;
+	//角速度内环
+	int GyroOut;
+	int errGyro = AngleOut - gyro + 12;
+	i_Gyro += errGyro;
+	int d_Gyro = gyro - old_Gyro;
+	GyroOut = Kp_Gyro * errGyro + Ki_Angle * i_Gyro + Kd_Gyro * d_Gyro;
+	return GyroOut;
+}
+
 
 /**
 ****************************************************************************************
